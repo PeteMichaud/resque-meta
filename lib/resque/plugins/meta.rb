@@ -68,6 +68,26 @@ module Resque
         meta
       end
 
+      # Enqueues a job in Resque and return the association metadata.
+      # The meta_id in the returned object can be used to fetch the
+      # metadata again in the future.
+      def enqueue_at(at_time, *args)
+        meta = Metadata.new({'meta_id' => meta_id(args), 'job_class' => self.to_s})
+        meta.save
+        Resque.enqueue_at(at_time, self, meta.meta_id, *args)
+        meta
+      end
+
+      # Enqueues a job in Resque and return the association metadata.
+      # The meta_id in the returned object can be used to fetch the
+      # metadata again in the future.
+      def enqueue_in(in_time, *args)
+        meta = Metadata.new({'meta_id' => meta_id(args), 'job_class' => self.to_s})
+        meta.save
+        Resque.enqueue_at(in_time, self, meta.meta_id, *args)
+        meta
+      end
+
       def store_meta(meta)
         key = "meta:#{meta.meta_id}"
         json = Resque.encode(meta.data)
