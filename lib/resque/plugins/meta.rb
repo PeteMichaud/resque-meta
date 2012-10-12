@@ -84,7 +84,7 @@ module Resque
       def enqueue_in(in_time, *args)
         meta = Metadata.new({'meta_id' => meta_id(args), 'job_class' => self.to_s})
         meta.save
-        Resque.enqueue_at(in_time, self, meta.meta_id, *args)
+        Resque.enqueue_in(in_time, self, meta.meta_id, *args)
         meta
       end
 
